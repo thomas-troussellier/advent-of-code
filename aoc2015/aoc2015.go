@@ -9,6 +9,7 @@ var Aoc2015 = aoc.AoCEvent{
 		1: day1,
 		2: day2,
 		3: day3,
+		4: day4,
 	},
 	EventYear: "2015",
 	Dir:       "aoc2015",
