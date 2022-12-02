@@ -13,7 +13,7 @@ func day6() {
 	fmt.Println("Day 6")
 
 	// load exercise data
-	instructions := loadInstructions("aoc2015/day_6.log")
+	instructions := loadLightInstr("aoc2015/day_6.log")
 
 	var grid [1000][1000]bool
 
@@ -112,7 +112,7 @@ func convertInstruction(instruction string) (lx, rx, ly, ry int, instr order) {
 	return x[0], x[1], y[0], y[1], instr
 }
 
-func loadInstructions(fileName string) []string {
+func loadLightInstr(fileName string) []string {
 	readFile, err := os.Open(fileName)
 
 	if err != nil {
