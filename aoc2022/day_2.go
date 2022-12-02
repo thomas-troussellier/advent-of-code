@@ -1,17 +1,18 @@
-package main
+package aoc2022
 
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
 
-func Day2() {
+func day2() {
 	fmt.Println("Day 2")
 
 	// load exercise data
-	strategy := LoadRockPaperScissorsData("day_2.log")
+	strategy := LoadRockPaperScissorsData("aoc2022/day_2.log")
 
 	// based on prior assumption that X,Y,Z (rock, paper, scissors) correspond to your moves
 	totalScore := 0
@@ -118,7 +119,7 @@ func LoadRockPaperScissorsData(fileName string) strategy {
 	readFile, err := os.Open(fileName)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	fileScanner := bufio.NewScanner(readFile)
 

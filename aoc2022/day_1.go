@@ -1,4 +1,4 @@
-package main
+package aoc2022
 
 import (
 	"bufio"
@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func Day1() {
+func day1() {
 	fmt.Println("Day 1")
 
 	// load exercise data
-	elves := LoadElvesData("day_1.log")
+	elves := LoadElvesData("aoc2022/day_1.log")
 
 	// sort list by highest load first
 	elves.Sort(func(i, j int) bool {
@@ -65,7 +65,7 @@ func LoadElvesData(fileName string) elves {
 	readFile, err := os.Open(fileName)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	fileScanner := bufio.NewScanner(readFile)
 

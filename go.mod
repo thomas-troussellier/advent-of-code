@@ -1,3 +1,3 @@
-module aoc2022
+module advent-of-code
 
 go 1.19
