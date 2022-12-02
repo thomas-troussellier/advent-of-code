@@ -15,7 +15,7 @@ func day4() {
 	fmt.Println("Day 4")
 
 	// load exercise data
-	secret := loadData("aoc2015/day_4.log")
+	secret := loadSecret("aoc2015/day_4.log")
 
 	fmt.Println("Q1. need to find MD5 hashes which, in hexadecimal, start with at least five zeroes")
 	cmpt := 1
@@ -47,7 +47,7 @@ var nilBits = []byte{0, 0}
 
 var moarNilBits = []byte{0, 0, 0}
 
-func loadData(fileName string) string {
+func loadSecret(fileName string) string {
 	readFile, err := os.Open(fileName)
 
 	if err != nil {
