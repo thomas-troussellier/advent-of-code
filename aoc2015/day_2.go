@@ -14,7 +14,7 @@ func day2() {
 	fmt.Println("Day 2")
 
 	// load exercise data
-	presents := LoadData("aoc2015/day_2.log")
+	presents := LoadPresentsData("aoc2015/day_2.log")
 
 	// how many square feet of wrapping paper ?
 	totalWrapping := 0
@@ -55,7 +55,7 @@ func (p *present) computeWrappings() {
 	p.ribbonNeeded = sortedDims[0] + (p.length * p.width * p.height)
 }
 
-func LoadData(fileName string) *[]*present {
+func LoadPresentsData(fileName string) *[]*present {
 	readFile, err := os.Open(fileName)
 
 	if err != nil {
