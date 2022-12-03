@@ -6,6 +6,7 @@ var Aoc2022 = aoc.AoCEvent{
 	Day_func_map: map[int]func(){
 		1: day1,
 		2: day2,
+		3: day3,
 	},
 	EventYear: "2022",
 	Dir:       "aoc2022",
