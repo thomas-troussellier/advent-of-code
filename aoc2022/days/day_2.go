@@ -1,4 +1,4 @@
-package aoc2022
+package days
 
 import (
 	"bufio"
@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-func day2() {
+func Day2() {
 	fmt.Println("Day 2")
 
 	// load exercise data
-	strategy := LoadRockPaperScissorsData("aoc2022/day_2.log")
+	strategy := LoadRockPaperScissorsData("aoc2022/inputs/day_2.log")
 
 	// based on prior assumption that X,Y,Z (rock, paper, scissors) correspond to your moves
 	totalScore := 0

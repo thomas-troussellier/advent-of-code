@@ -1,4 +1,4 @@
-package aoc2022
+package days
 
 import (
 	"bufio"
@@ -7,11 +7,11 @@ import (
 	"os"
 )
 
-func day4() {
+func Day4() {
 	fmt.Println("Day 4")
 
 	// load exercise data
-	pairsData := LoadSpacePairsData("aoc2022/day_4.log")
+	pairsData := LoadSpacePairsData("aoc2022/inputs/day_4.log")
 
 	fmt.Println("Q1. In how many assignment pairs does one range fully contain the other?")
 	totalContainedPairs := findContained(pairsData)

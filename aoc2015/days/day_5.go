@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-func day5() {
+func Day5() {
 	fmt.Println("Day 5")
 
 	// load exercise data
-	entries := loadStringList("aoc2015/day_5.log")
+	entries := loadStringList("aoc2015/inputs/day_5.log")
 
 	fmt.Println("Q1. How many strings are nice?")
 	noice := 0

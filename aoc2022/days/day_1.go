@@ -1,4 +1,4 @@
-package aoc2022
+package days
 
 import (
 	"bufio"
@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func day1() {
+func Day1() {
 	fmt.Println("Day 1")
 
 	// load exercise data
-	elves := LoadElvesData("aoc2022/day_1.log")
+	elves := LoadElvesData("aoc2022/inputs/day_1.log")
 
 	// sort list by highest load first
 	elves.Sort(func(i, j int) bool {

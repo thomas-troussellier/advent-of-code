@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -11,11 +11,11 @@ import (
 	"strings"
 )
 
-func day4() {
+func Day4() {
 	fmt.Println("Day 4")
 
 	// load exercise data
-	secret := loadSecret("aoc2015/day_4.log")
+	secret := loadSecret("aoc2015/inputs/day_4.log")
 
 	fmt.Println("Q1. need to find MD5 hashes which, in hexadecimal, start with at least five zeroes")
 	cmpt := 1

@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -11,11 +11,11 @@ import (
 	"strings"
 )
 
-func day7() {
+func Day7() {
 	fmt.Println("Day 7")
 
 	// load exercise data
-	instructions := loadCircuitInstr("aoc2015/day_7.log")
+	instructions := loadCircuitInstr("aoc2015/inputs/day_7.log")
 
 	registry := make(map[string]uint16)
 

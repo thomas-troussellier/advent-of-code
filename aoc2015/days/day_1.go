@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -7,11 +7,11 @@ import (
 	"os"
 )
 
-func day1() {
+func Day1() {
 	fmt.Println("Day 1")
 
 	// load exercise data
-	santaMap := LoadSantaMapData("aoc2015/day_1.log")
+	santaMap := LoadSantaMapData("aoc2015/inputs/day_1.log")
 
 	// where does santa ends up in ?
 	fmt.Println("Q1. To what floor do the instructions take Santa?")

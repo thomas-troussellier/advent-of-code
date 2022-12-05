@@ -1,4 +1,4 @@
-package aoc2022
+package days
 
 import (
 	"bufio"
@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-func day5() {
+func Day5() {
 	fmt.Println("Day 5")
 
 	// load exercise data
-	crates, moves := LoadCrateData("aoc2022/day_5.log")
+	crates, moves := LoadCrateData("aoc2022/inputs/day_5.log")
 
 	fmt.Println("Q1. After the rearrangement procedure completes, what crate ends up on top of each stack?")
 	cratesOnTop := computeMoves9000(crates, moves)
 	fmt.Printf("A1. crates on top of each stack: %s\n", cratesOnTop)
 
 	// load exercise data
-	crates, moves = LoadCrateData("aoc2022/day_5.log")
+	crates, moves = LoadCrateData("aoc2022/inputs/day_5.log")
 	fmt.Println("Q2. After the rearrangement procedure completes, what crate ends up on top of each stack?")
 	cratesOnTop = computeMoves9001(crates, moves)
 	fmt.Printf("A1. crates on top of each stack: %s\n", cratesOnTop)

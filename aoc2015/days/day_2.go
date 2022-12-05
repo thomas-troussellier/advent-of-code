@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func day2() {
+func Day2() {
 	fmt.Println("Day 2")
 
 	// load exercise data
-	presents := LoadPresentsData("aoc2015/day_2.log")
+	presents := LoadPresentsData("aoc2015/inputs/day_2.log")
 
 	// how many square feet of wrapping paper ?
 	totalWrapping := 0

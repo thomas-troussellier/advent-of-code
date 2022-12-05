@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -7,17 +7,17 @@ import (
 	"os"
 )
 
-func day3() {
+func Day3() {
 	fmt.Println("Day 3")
 
 	// load exercise data
-	homes := loadOneSanta("aoc2015/day_3.log")
+	homes := loadOneSanta("aoc2015/inputs/day_3.log")
 
 	fmt.Println("Q1. How many houses receive at least one present?")
 	fmt.Printf("A1. total : %d\n", len(homes))
 
 	// new way to explore houses with 2 santas, each moving after the other
-	homes = loadTwoSanta("aoc2015/day_3.log")
+	homes = loadTwoSanta("aoc2015/inputs/day_3.log")
 
 	fmt.Println("Q2. This year, how many houses receive at least one present?")
 	fmt.Printf("A2. total : %d\n", len(homes))

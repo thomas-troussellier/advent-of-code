@@ -1,4 +1,4 @@
-package aoc2022
+package days
 
 import (
 	"bufio"
@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-func day3() {
+func Day3() {
 	fmt.Println("Day 3")
 
 	// load exercise data
-	rumsacks := LoadRumsackData("aoc2022/day_3.log")
+	rumsacks := LoadRumsackData("aoc2022/inputs/day_3.log")
 
 	fmt.Println("Q1. What is the sum of the priorities of those item types?")
 	totalPriorities := findPriorities1(rumsacks)

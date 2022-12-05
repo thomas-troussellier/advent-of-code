@@ -1,4 +1,4 @@
-package aoc2015
+package days
 
 import (
 	"bufio"
@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-func day6() {
+func Day6() {
 	fmt.Println("Day 6")
 
 	// load exercise data
-	instructions := loadLightInstr("aoc2015/day_6.log")
+	instructions := loadLightInstr("aoc2015/inputs/day_6.log")
 
 	var grid [1000][1000]bool
 
