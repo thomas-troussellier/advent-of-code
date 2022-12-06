@@ -19,9 +19,9 @@ func Day10() {
 	res := computeLookSay(lookSay, 40)
 	fmt.Printf("A1.Length of the result: %d\n", len(res))
 
-	fmt.Println("Q1. What is the length of the result? (Apply 50 times)")
+	fmt.Println("Q2. What is the length of the result? (Apply 50 times)")
 	res = computeLookSay(lookSay, 50)
-	fmt.Printf("A1.Length of the result: %d\n", len(res))
+	fmt.Printf("A2.Length of the result: %d\n", len(res))
 }
 
 func computeLookSay(input string, repeat int) string {
