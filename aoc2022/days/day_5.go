@@ -86,7 +86,7 @@ func LoadCrateData(fileName string) ([][]string, []instruction) {
 		}
 
 		switch st[0] {
-		case craneStart[0]:
+		case craneStart:
 			nbStacks := (len(currentLine) + 1) / 4
 			for i := 0; i < nbStacks; i++ {
 				if len(crates) == 0 {
@@ -97,7 +97,7 @@ func LoadCrateData(fileName string) ([][]string, []instruction) {
 					crates[i] = append(crates[i], crate)
 				}
 			}
-		case instructionStart[0]:
+		case instructionStart:
 			var (
 				from int
 				to   int
@@ -121,6 +121,6 @@ type instruction struct {
 }
 
 const (
-	craneStart       string = "["
-	instructionStart string = "m"
+	craneStart       byte = '['
+	instructionStart byte = 'm'
 )
