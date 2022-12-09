@@ -19,7 +19,6 @@ func Day8() {
 	fmt.Println("Q2. What is the highest scenic score possible for any tree?")
 	scenicScore := computeScenicScore(trees)
 	fmt.Printf("A2. Highest scenic score: %d\n", scenicScore)
-
 }
 
 func computeScenicScore(trees [][]int) int {
