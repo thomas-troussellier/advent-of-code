@@ -17,6 +17,7 @@ var Aoc2022 = aoc.AoCEvent{
 		8:  days.Day8,
 		9:  days.Day9,
 		10: days.Day10,
+		11: days.Day11,
 	},
 	EventYear: "2022",
 	Dir:       "aoc2022",
