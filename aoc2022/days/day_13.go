@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -19,16 +20,53 @@ func Day13() {
 	fmt.Println("Q1. What is the sum of the indices of those pairs?")
 	fmt.Printf("A1. the sum of the indices of sorted pairs: %d\n", nbSorted)
 
+	decoderKey := sortPackets(pairs)
+
+	fmt.Println("Q2. What is the decoder key for the distress signal?")
+	fmt.Printf("A2. decoder key: %d\n", decoderKey)
+
 }
 
 func checkPackets(pairs []*pairs) (total int) {
-	for i, p := range pairs {
-		if p.compare() {
-			total = total + (i + 1)
+	total = 0
+	for i := 0; i < len(pairs); i++ {
+		p := pairs[i]
+		compa := compare(p.left, p.right)
+		if compa < 0 {
+			total += (1 + i)
 		}
 	}
 
 	return
+}
+
+func sortPackets(pairs []*pairs) (total int) {
+	total = 0
+	pz := make([]any, 0)
+	for i := 0; i < len(pairs); i++ {
+		p := pairs[i]
+		pz = append(pz, p.left, p.right)
+	}
+
+	divPacket1 := []any{[]any{2}}
+	divPacket2 := []any{[]any{6}}
+
+	pz = append(pz, divPacket1)
+	pz = append(pz, divPacket2)
+
+	sort.Slice(pz, func(i, j int) bool {
+		return compare(pz[i].([]any), pz[j].([]any)) < 0
+	})
+
+	decoder := 1
+
+	for i := range pz {
+		if fmt.Sprint(pz[i]) == "[[2]]" || fmt.Sprint(pz[i]) == "[[6]]" {
+			decoder *= (i + 1)
+		}
+	}
+
+	return decoder
 }
 
 func loadPacketsPairs(fileName string) []*pairs {
@@ -53,9 +91,9 @@ func loadPacketsPairs(fileName string) []*pairs {
 		}
 
 		if currentPair.left == nil {
-			currentPair.left = parseInput(currentLine).([]interface{})
+			currentPair.left = parseInput(currentLine).([]any)
 		} else if currentPair.right == nil {
-			currentPair.right = parseInput(currentLine).([]interface{})
+			currentPair.right = parseInput(currentLine).([]any)
 		} else {
 			temp := currentPair
 			pairList = append(pairList, &temp)
@@ -70,60 +108,17 @@ func loadPacketsPairs(fileName string) []*pairs {
 }
 
 type pairs struct {
-	left  []interface{}
-	right []interface{}
+	left  []any
+	right []any
 }
 
 func (p pairs) String() string {
 	return fmt.Sprintf("l:%s r:%s\n", p.left, p.right)
 }
 
-func (p pairs) compare() bool {
-	return compareList(p.left, p.right)
-}
-
-func compareList(pLeft []interface{}, pRight []interface{}) bool {
-
-	if len(pLeft) > len(pRight) {
-		return !compareList(pRight, pLeft)
-	}
-
+func parseInput(input string) any {
 	index := 0
-	for index < len(pLeft) {
-		rightOrder := true
-		switch v := pLeft[index].(type) {
-		case []interface{}:
-			switch v2 := pRight[index].(type) {
-			case []interface{}:
-				rightOrder = compareList(v, v2)
-			case int:
-				rightOrder = compareList(v, []interface{}{v2})
-			}
-		case int:
-			switch v2 := pRight[index].(type) {
-			case []interface{}:
-				rightOrder = compareList([]interface{}{v}, v2)
-			case int:
-				rightOrder = compareInt(v, v2)
-			}
-		}
-
-		if !rightOrder {
-			return false
-		}
-		index++
-	}
-
-	return true
-}
-
-func compareInt(v, v2 int) bool {
-	return v <= v2
-}
-
-func parseInput(input string) interface{} {
-	index := 0
-	finalValue := make([]interface{}, 0)
+	finalValue := make([]any, 0)
 	for index < len(input) {
 		switch input[index] {
 		case '[':
@@ -152,25 +147,64 @@ func parseInput(input string) interface{} {
 }
 
 func readList(input string) int {
-	nextClosing := strings.Index(input, "]")
-	nextOpening := strings.Index(input[1:], "[")
+	op := 1
+	ind := -1
+	for i, r := range input[1:] {
+		if op == 0 {
+			break
+		}
+		if r == '[' {
+			op++
+			continue
+		}
+		if r == ']' {
+			op--
+			ind = i
+			continue
+		}
+	}
+	return ind + 2
+}
 
-	if (nextOpening < 0) || (nextClosing < nextOpening) {
-		return nextClosing + 1
+func compare(l1, l2 []any) int {
+	for index := 0; index < len(l1); index++ {
+		if index >= len(l2) {
+			return 1
+		}
+
+		var comp int
+
+		switch v1 := l1[index].(type) {
+		case int:
+			// check against l2 value
+			switch v2 := l2[index].(type) {
+			case int:
+				comp = v1 - v2
+			case []any:
+				comp = compare([]any{v1}, v2)
+			}
+		case []any:
+			// check against l2 value
+			switch v2 := l2[index].(type) {
+			case int:
+				comp = compare(v1, []any{v2})
+			case []any:
+				comp = compare(v1, v2)
+			}
+		}
+
+		if comp < 0 {
+			return -1
+		}
+		if comp > 0 {
+			return 1
+		}
+		continue
 	}
 
-	countOpening := strings.Count(input, "[")
-
-	tIndex := 0
-	for countOpening > 0 {
-		if tIndex == len(input) {
-			return tIndex
-		}
-		if input[tIndex] == ']' {
-			countOpening--
-		}
-		tIndex++
+	if len(l1) < len(l2) {
+		return -1
 	}
 
-	return tIndex
+	return 0
 }
