@@ -1,0 +1,38 @@
+package day_DAY_PLACEHOLDER
+
+import (
+	"advent-of-code/aoc"
+	"log"
+)
+
+type day struct {
+	inputFile string
+}
+
+var _ aoc.EventRunner = (*day)(nil)
+
+func Create() aoc.EventRunner {
+	return create("aocYEAR_PLACEHOLDER/day_DAY_PLACEHOLDER/input.txt")
+}
+
+func create(inputFile string) *day {
+	return &day{
+		inputFile: inputFile,
+	}
+}
+
+func (d *day) Execute() {
+	log.Println("Day DAY_PLACEHOLDER")
+	log.Println("Q1:", d.Question1())
+	log.Println("Q2:", d.Question2())
+}
+
+func (d *day) Question1() string {
+
+	return "Question1"
+}
+
+func (d *day) Question2() string {
+
+	return "Question2"
+}
