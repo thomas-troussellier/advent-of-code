@@ -8,6 +8,7 @@ import (
 	"advent-of-code/aoc2022/day_12"
 	"advent-of-code/aoc2022/day_13"
 	"advent-of-code/aoc2022/day_14"
+	"advent-of-code/aoc2022/day_15"
 	"advent-of-code/aoc2022/day_2"
 	"advent-of-code/aoc2022/day_3"
 	"advent-of-code/aoc2022/day_4"
@@ -34,7 +35,7 @@ var Aoc2022 = aoc.AoCEvent{
 		12: day_12.Create(),
 		13: day_13.Create(),
 		14: day_14.Create(),
-		//15: day_15.Create(),
+		15: day_15.Create(),
 	},
 	EventYear: "2022",
 }
