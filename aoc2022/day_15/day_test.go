@@ -12,7 +12,7 @@ func TestQuestion1(t *testing.T) {
 	)
 	day := create("input_test.txt")
 	s, b := day.loadData()
-	val = strconv.Itoa(computeNonAvailableSpaces(s, b, 10))
+	val = strconv.Itoa(nbUnavailableSpacesOnLine(s, b, 10))
 	t.Log("expected", expected, "got", val)
 	if val != expected {
 		t.Fail()
@@ -25,7 +25,8 @@ func TestQuestion2(t *testing.T) {
 		val      string
 	)
 	day := create("input_test.txt")
-	val = day.Question2()
+	s, b := day.loadData()
+	val = strconv.Itoa(findFrequency(s, b, 20))
 	t.Log("expected", expected, "got", val)
 	if val != expected {
 		t.Fail()
