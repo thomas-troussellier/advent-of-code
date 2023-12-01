@@ -2,11 +2,12 @@ package aoc2023
 
 import (
 	"advent-of-code/aoc"
+	"advent-of-code/aoc2023/day_1"
 )
 
 var Aoc2023 = aoc.AoCEvent{
 	Day_func_map: map[int]aoc.EventRunner{
-		//1:  day_1.Create(),
+		1: day_1.Create(),
 		//2:  day_2.Create(),
 		//3:  day_3.Create(),
 		//4:  day_4.Create(),
