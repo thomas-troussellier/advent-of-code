@@ -4,13 +4,14 @@ import (
 	"advent-of-code/aoc"
 	"advent-of-code/aoc2023/day_1"
 	"advent-of-code/aoc2023/day_2"
+	"advent-of-code/aoc2023/day_3"
 )
 
 var Aoc2023 = aoc.AoCEvent{
 	Day_func_map: map[int]aoc.EventRunner{
 		1: day_1.Create(),
 		2: day_2.Create(),
-		//3:  day_3.Create(),
+		3: day_3.Create(),
 		//4:  day_4.Create(),
 		//5:  day_5.Create(),
 		//6:  day_6.Create(),
