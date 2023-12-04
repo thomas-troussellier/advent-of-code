@@ -3,7 +3,6 @@ package day_3
 import (
 	"advent-of-code/aoc"
 	"advent-of-code/aoc/utils"
-	"bufio"
 	"log"
 	"slices"
 	"strconv"
@@ -138,9 +137,6 @@ type number struct {
 
 func (d *day) loadData() ([]number, map[int][]int, map[int][]int) {
 	file := utils.LoadInput(d.inputFile)
-
-	fileScanner := bufio.NewScanner(file)
-	fileScanner.Split(bufio.ScanLines)
 
 	symbols := make(map[int][]int)
 	numbers := make([]number, 0)
