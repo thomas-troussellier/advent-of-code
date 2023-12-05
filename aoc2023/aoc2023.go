@@ -6,6 +6,7 @@ import (
 	"advent-of-code/aoc2023/day_2"
 	"advent-of-code/aoc2023/day_3"
 	"advent-of-code/aoc2023/day_4"
+	"advent-of-code/aoc2023/day_5"
 )
 
 var Aoc2023 = aoc.AoCEvent{
@@ -14,7 +15,7 @@ var Aoc2023 = aoc.AoCEvent{
 		2: day_2.Create(),
 		3: day_3.Create(),
 		4: day_4.Create(),
-		//5:  day_5.Create(),
+		5: day_5.Create(),
 		//6:  day_6.Create(),
 		//7:  day_7.Create(),
 		//8:  day_8.Create(),
