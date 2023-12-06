@@ -61,8 +61,7 @@ func (d *day) Question2() string {
 		go func(i int) {
 			start, _ := strconv.Atoi(al.seeds[i])
 			size, _ := strconv.Atoi(al.seeds[i+1])
-			end := start + size - 1
-			res <- computeLocForSeedRange(al, start, end)
+			res <- computeLocForSeedRange(al, start, size)
 			wg.Done()
 		}(i)
 	}
@@ -81,22 +80,18 @@ func (d *day) Question2() string {
 }
 
 func computeLocForSeed(al *almanach, seed int) int {
-	dist := seed
-	dist = computeDest(al.seedsToSoil, dist)
-	dist = computeDest(al.soilToFertilizer, dist)
-	dist = computeDest(al.fertilizerToWater, dist)
-	dist = computeDest(al.waterToLight, dist)
-	dist = computeDest(al.lightToTemperature, dist)
-	dist = computeDest(al.temperatureToHumidity, dist)
-	dist = computeDest(al.humidityToLocation, dist)
+	mapping := [][]rang3{al.seedsToSoil, al.soilToFertilizer, al.fertilizerToWater, al.waterToLight, al.lightToTemperature, al.temperatureToHumidity, al.humidityToLocation}
+	for i := range mapping {
+		seed = computeDest(mapping[i], seed)
+	}
 
-	return dist
+	return seed
 }
 
-func computeLocForSeedRange(al *almanach, seedStart, seedEnd int) int {
+func computeLocForSeedRange(al *almanach, seedStart, size int) int {
 	min := 0
 
-	for s := seedStart; s <= seedEnd; s++ {
+	for s := seedStart; s < seedStart+size; s++ {
 		i := computeLocForSeed(al, s)
 		if (min == 0) || (i < min) {
 			min = i
@@ -118,7 +113,7 @@ type almanach struct {
 }
 
 type rang3 struct {
-	sourceStart, destStart, size int
+	sourceStart, delta, size int
 }
 
 var sortSourceRange = func(a rang3, b rang3) int {
@@ -127,7 +122,8 @@ var sortSourceRange = func(a rang3, b rang3) int {
 
 func rangeFromString(line string) rang3 {
 	r := rang3{}
-	fmt.Sscanf(line, "%d %d %d", &r.destStart, &r.sourceStart, &r.size)
+	fmt.Sscanf(line, "%d %d %d", &r.delta, &r.sourceStart, &r.size)
+	r.delta = r.delta - r.sourceStart
 	return r
 }
 
@@ -135,11 +131,15 @@ func rangeFromString(line string) rang3 {
 func computeDest(corrMap []rang3, source int) int {
 	loc := source
 	for _, r := range corrMap {
-		if (source < r.sourceStart) || (source > (r.sourceStart + r.size - 1)) {
+		if source < r.sourceStart {
+			break
+		}
+
+		if source > (r.sourceStart + r.size - 1) {
 			continue
 		}
 
-		loc = r.destStart - r.sourceStart + source
+		loc = source + r.delta
 		break
 	}
 
