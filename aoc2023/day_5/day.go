@@ -80,7 +80,7 @@ func (d *day) Question2() string {
 	return strconv.Itoa(min)
 }
 
-func computeLocForSeed(al almanach, seed int) int {
+func computeLocForSeed(al *almanach, seed int) int {
 	dist := seed
 	dist = computeDest(al.seedsToSoil, dist)
 	dist = computeDest(al.soilToFertilizer, dist)
@@ -93,7 +93,7 @@ func computeLocForSeed(al almanach, seed int) int {
 	return dist
 }
 
-func computeLocForSeedRange(al almanach, seedStart, seedEnd int) int {
+func computeLocForSeedRange(al *almanach, seedStart, seedEnd int) int {
 	min := 0
 
 	for s := seedStart; s <= seedEnd; s++ {
@@ -121,7 +121,7 @@ type rang3 struct {
 	sourceStart, destStart, size int
 }
 
-var sortRange = func(a rang3, b rang3) int {
+var sortSourceRange = func(a rang3, b rang3) int {
 	return a.sourceStart - b.sourceStart
 }
 
@@ -146,22 +146,22 @@ func computeDest(corrMap []rang3, source int) int {
 	return loc
 }
 
-func (a almanach) sortMappings() {
-	slices.SortFunc(a.seedsToSoil, sortRange)
-	slices.SortFunc(a.soilToFertilizer, sortRange)
-	slices.SortFunc(a.fertilizerToWater, sortRange)
-	slices.SortFunc(a.waterToLight, sortRange)
-	slices.SortFunc(a.lightToTemperature, sortRange)
-	slices.SortFunc(a.temperatureToHumidity, sortRange)
-	slices.SortFunc(a.humidityToLocation, sortRange)
+func (a *almanach) sortMappings() {
+	slices.SortFunc(a.seedsToSoil, sortSourceRange)
+	slices.SortFunc(a.soilToFertilizer, sortSourceRange)
+	slices.SortFunc(a.fertilizerToWater, sortSourceRange)
+	slices.SortFunc(a.waterToLight, sortSourceRange)
+	slices.SortFunc(a.lightToTemperature, sortSourceRange)
+	slices.SortFunc(a.temperatureToHumidity, sortSourceRange)
+	slices.SortFunc(a.humidityToLocation, sortSourceRange)
 }
 
-func (d *day) loadData() almanach {
+func (d *day) loadData() *almanach {
 	input := utils.LoadInput(d.inputFile)
 	fileScanner := bufio.NewScanner(input)
 	fileScanner.Split(bufio.ScanLines)
 
-	almanach := almanach{
+	almanach := &almanach{
 		seeds:                 make([]string, 0),
 		seedsToSoil:           make([]rang3, 0),
 		soilToFertilizer:      make([]rang3, 0),

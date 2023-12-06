@@ -1,12 +1,10 @@
-package day_5
+package day_6
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestQuestion1(t *testing.T) {
 	var (
-		expected = "35"
+		expected = "288"
 		val      string
 	)
 	day := create("input_test.txt")
@@ -19,7 +17,7 @@ func TestQuestion1(t *testing.T) {
 
 func TestQuestion2(t *testing.T) {
 	var (
-		expected = "46"
+		expected = "71503"
 		val      string
 	)
 	day := create("input_test.txt")
