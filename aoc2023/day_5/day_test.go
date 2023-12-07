@@ -34,13 +34,6 @@ func TestXxx(t *testing.T) {
 
 	day := create("input_test.txt")
 	al := day.loadData()
-	log.Println(al.seedsToSoil)
-	log.Println(al.soilToFertilizer)
-	log.Println(al.fertilizerToWater)
-	log.Println(al.waterToLight)
-	log.Println(al.lightToTemperature)
-	log.Println(al.temperatureToHumidity)
-	log.Println(al.humidityToLocation)
 
 	m := make(map[int]int)
 	for i := 0; i <= 100; i++ {
@@ -50,5 +43,16 @@ func TestXxx(t *testing.T) {
 		log.Println(i, m[i])
 	}
 
-	consolidate(al.seedsToSoil, al.soilToFertilizer)
+	test := consolidate(al.seedsToSoil, al.soilToFertilizer)
+	log.Println("al.seedsToSoil, al.soilToFertilizer", test)
+	//test = consolidate(test, al.fertilizerToWater)
+	//log.Println("fertilizerToWater", test)
+	//test = consolidate(test, al.waterToLight)
+	//log.Println("waterToLight", test)
+	//test = consolidate(test, al.lightToTemperature)
+	//log.Println("lightToTemperature", test)
+	//test = consolidate(test, al.temperatureToHumidity)
+	//log.Println("temperatureToHumidity", test)
+	//test = consolidate(test, al.humidityToLocation)
+	//log.Println("humidityToLocation", test)
 }
