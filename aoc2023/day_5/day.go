@@ -121,7 +121,7 @@ type rang3 struct {
 
 func (r rang3) String() string {
 	//return fmt.Sprintf("%d - %d => %d - %d", r.sourceStart, r.sourceStart+r.size-1, r.sourceStart+r.delta, r.sourceStart+r.size-1+r.delta)
-	return fmt.Sprintf("(%d - %d {%v})", r.sourceStart, r.sourceStart+r.size-1, r.deltas)
+	return fmt.Sprintf("(%d - %d {%v} %d)", r.sourceStart, r.sourceStart+r.size-1, r.deltas, r.delta)
 }
 
 var sortSourceRange = func(a rang3, b rang3) int {
@@ -212,7 +212,13 @@ func consolidate(base []rang3, in []rang3) []rang3 {
 	copy(consolided, base)
 
 	for _, new := range in {
-		consolided = consolidateList(consolided, &new)
+		consolided = consolidateList(consolided, &new, len(base[0].deltas))
+	}
+
+	for i, v := range consolided {
+		if len(v.deltas) < len(base[0].deltas)+1 {
+			consolided[i].deltas = append(consolided[i].deltas, 0)
+		}
 	}
 
 	slices.SortFunc(consolided, sortSourceRange)
@@ -220,7 +226,7 @@ func consolidate(base []rang3, in []rang3) []rang3 {
 	return consolided
 }
 
-func consolidateList(toModify []rang3, new *rang3) []rang3 {
+func consolidateList(toModify []rang3, new *rang3, base int) []rang3 {
 	if new == nil {
 		return toModify
 	}
@@ -231,7 +237,7 @@ func consolidateList(toModify []rang3, new *rang3) []rang3 {
 		if new.sourceStart > (ra.sourceStart + ra.size - 1) {
 			continue
 		}
-		newRanges, toCheck := consolidateOne(ra, *new)
+		newRanges, toCheck := consolidateOne(ra, *new, base)
 		// replace ra index with newRanges
 		if i < len(consolided)-1 {
 			consolided = append(consolided[:i], append(newRanges, consolided[i+1:]...)...)
@@ -241,49 +247,20 @@ func consolidateList(toModify []rang3, new *rang3) []rang3 {
 		if toCheck == nil {
 			break
 		}
-		consolided = consolidateList(consolided, toCheck)
+		consolided = consolidateList(consolided, toCheck, base)
 		break
 	}
 
-	for i := range consolided {
-		if len(consolided[i].deltas) < len(toModify[0].deltas)+1 {
-			consolided[i].deltas = append(consolided[i].deltas, 0)
-		}
-	}
-
 	slices.SortFunc(consolided, sortSourceRange)
 
 	return consolided
 }
 
-func consoRec(toModify []rang3, new *rang3) []rang3 {
-	if new == nil {
-		return toModify
-	}
-	mCopy := make([]rang3, len(toModify))
-	copy(mCopy, toModify)
-
+func consolidateOne(current rang3, new rang3, base int) ([]rang3, *rang3) {
 	consolided := make([]rang3, 0)
 
-	newValues, next := consolidateOne(mCopy[0], *new)
-	log.Println("new val", newValues, next)
-	consolided = append(consolided, newValues...)
-	log.Println("before rec", consolided)
-	consolided = append(consolided, consoRec(mCopy[1:], next)...)
-
-	slices.SortFunc(consolided, sortSourceRange)
-
-	return consolided
-}
-
-func consolidateOne(current rang3, new rang3) ([]rang3, *rang3) {
-	consolided := make([]rang3, 0)
-	consolided = append(consolided, current)
-
-	ind := len(consolided) - 1
-
-	currentStart := consolided[ind].sourceStart
-	currentEnd := consolided[ind].sourceStart + consolided[ind].size - 1
+	currentStart := current.sourceStart
+	currentEnd := current.sourceStart + current.size - 1
 
 	newStart := new.sourceStart
 	newEnd := new.sourceStart + new.size - 1
@@ -295,28 +272,28 @@ func consolidateOne(current rang3, new rang3) ([]rang3, *rang3) {
 		//log.Println("newStart < currentStart")
 		if newEnd < currentStart {
 			//log.Println("newEnd < currentStart")
-			consolided[ind] = rang3{sourceStart: newStart, size: new.size, delta: new.delta, deltas: append(make([]int, len(current.deltas)), new.delta)}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: currentStart, size: current.size, delta: current.delta, deltas: current.deltas}}, consolided[ind:]...)...)
+			consolided = append(consolided, rang3{sourceStart: newStart, size: new.size, delta: new.delta, deltas: append(make([]int, base), new.delta)})
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: current.size, delta: current.delta, deltas: current.deltas})
 		} else if newEnd == currentStart {
 			//log.Println("newEnd == currentStart")
-			consolided[ind] = rang3{sourceStart: newStart, size: new.size - 1, delta: new.delta, deltas: append(make([]int, len(current.deltas)), new.delta)}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: currentStart, size: 1, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
-			consolided = append(consolided[:ind+1], append([]rang3{{sourceStart: currentStart + 1, size: current.size - 1, delta: current.delta, deltas: current.deltas}}, consolided[ind+1:]...)...)
+			consolided = append(consolided, rang3{sourceStart: newStart, size: new.size - 1, delta: new.delta, deltas: append(make([]int, base), new.delta)})
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: 1, delta: new.delta, deltas: append(current.deltas, new.delta)})
+			consolided = append(consolided, rang3{sourceStart: currentStart + 1, size: current.size - 1, delta: current.delta, deltas: current.deltas})
 		} else {
 			//log.Println("newEnd > currentStart")
 			if newEnd < currentEnd {
 				//log.Println("newEnd < currentEnd")
-				consolided[ind] = rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, len(current.deltas)), new.delta)}
-				consolided = append(consolided[:ind], append([]rang3{{sourceStart: currentStart, size: current.size - (currentEnd - newEnd), delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
-				consolided = append(consolided[:ind+1], append([]rang3{{sourceStart: newEnd + 1, size: (currentEnd - newEnd), delta: current.delta, deltas: current.deltas}}, consolided[ind+1:]...)...)
+				consolided = append(consolided, rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, base), new.delta)})
+				consolided = append(consolided, rang3{sourceStart: currentStart, size: current.size - (currentEnd - newEnd), delta: new.delta, deltas: append(current.deltas, new.delta)})
+				consolided = append(consolided, rang3{sourceStart: newEnd + 1, size: (currentEnd - newEnd), delta: current.delta, deltas: current.deltas})
 			} else if newEnd == currentEnd {
 				//	log.Println("newEnd == currentEnd")
-				consolided[ind] = rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, len(current.deltas)), new.delta)}
-				consolided = append(consolided[:ind], append([]rang3{{sourceStart: currentStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
+				consolided = append(consolided, rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, base), new.delta)})
+				consolided = append(consolided, rang3{sourceStart: currentStart, size: current.size, delta: new.delta, deltas: append(current.deltas, new.delta)})
 			} else {
 				//log.Println("newEnd > currentEnd")
-				consolided[ind] = rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, len(current.deltas)), new.delta)}
-				consolided = append(consolided[:ind], append([]rang3{{sourceStart: currentStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
+				consolided = append(consolided, rang3{sourceStart: newStart, size: currentStart - newStart, delta: new.delta, deltas: append(make([]int, base), new.delta)})
+				consolided = append(consolided, rang3{sourceStart: currentStart, size: current.size, delta: new.delta, deltas: append(current.deltas, new.delta)})
 				toCheck = &rang3{sourceStart: currentEnd + 1, size: newEnd - currentEnd, delta: new.delta, deltas: new.deltas}
 			}
 		}
@@ -324,14 +301,14 @@ func consolidateOne(current rang3, new rang3) ([]rang3, *rang3) {
 		//log.Println("newStart == currentStart")
 		if newEnd < currentEnd {
 			//log.Println("newEnd < currentEnd")
-			consolided[ind] = rang3{sourceStart: newStart, size: new.size, delta: new.delta + current.delta, deltas: append(current.deltas, new.delta)}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: newEnd + 1, size: currentEnd - newEnd, delta: current.delta, deltas: current.deltas}}, consolided[ind:]...)...)
+			consolided = append(consolided, rang3{sourceStart: newStart, size: new.size, delta: new.delta + current.delta, deltas: append(current.deltas, new.delta)})
+			consolided = append(consolided, rang3{sourceStart: newEnd + 1, size: currentEnd - newEnd, delta: current.delta, deltas: current.deltas})
 		} else if newEnd == currentEnd {
 			//log.Println("newEnd == currentEnd")
-			consolided[ind] = rang3{sourceStart: currentStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)})
 		} else {
 			//log.Println("newEnd > currentEnd")
-			consolided[ind] = rang3{sourceStart: newStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}
+			consolided = append(consolided, rang3{sourceStart: newStart, size: current.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)})
 			toCheck = &rang3{sourceStart: currentEnd + 1, size: newEnd - currentEnd, delta: new.delta, deltas: new.deltas}
 		}
 	} else {
@@ -342,17 +319,17 @@ func consolidateOne(current rang3, new rang3) ([]rang3, *rang3) {
 		}
 		if newEnd < currentEnd {
 			//log.Println("newEnd < currentEnd")
-			consolided[ind] = rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: newStart, size: new.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
-			consolided = append(consolided[:ind+1], append([]rang3{{sourceStart: newEnd + 1, size: currentEnd - newEnd, delta: current.delta, deltas: current.deltas}}, consolided[ind+1:]...)...)
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas})
+			consolided = append(consolided, rang3{sourceStart: newStart, size: new.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)})
+			consolided = append(consolided, rang3{sourceStart: newEnd + 1, size: currentEnd - newEnd, delta: current.delta, deltas: current.deltas})
 		} else if newEnd == currentEnd {
 			//log.Println("newEnd == currentEnd")
-			consolided[ind] = rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: newStart, size: new.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas})
+			consolided = append(consolided, rang3{sourceStart: newStart, size: new.size, delta: current.delta + new.delta, deltas: append(current.deltas, new.delta)})
 		} else {
 			//log.Println("newEnd > currentEnd")
-			consolided[ind] = rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas}
-			consolided = append(consolided[:ind], append([]rang3{{sourceStart: newStart, size: current.size - (newStart - currentStart), delta: new.delta + current.delta, deltas: append(current.deltas, new.delta)}}, consolided[ind:]...)...)
+			consolided = append(consolided, rang3{sourceStart: currentStart, size: newStart - currentStart, delta: current.delta, deltas: current.deltas})
+			consolided = append(consolided, rang3{sourceStart: newStart, size: current.size - (newStart - currentStart), delta: new.delta + current.delta, deltas: append(current.deltas, new.delta)})
 			toCheck = &rang3{sourceStart: currentEnd + 1, size: newEnd - currentEnd, delta: new.delta, deltas: new.deltas}
 		}
 	}
